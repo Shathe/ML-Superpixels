@@ -15,7 +15,7 @@ Soon cite.
 - Python 2.7
 - OpenCV
 - Numpy
-- CSV
+
 
 ## Running it all
 
@@ -42,7 +42,8 @@ The code that executes this step:
 ```
 python generate_sparse/generate_sparse.py --dataset ./Datasets/camvid --n_labels 400  --gridlike 1 --image_format png --default_value 255
 ```
-Every sparse labeled image will have [n_labels] number of labeled pixels. You can specify if you want the sparse labels to have a grid structure (value 1), or random (value 0) The rest pixels will have the [default_value] value
+Every sparse labeled image will have [n_labels] number of labeled pixels. You can specify if you want the sparse labels to have a grid structure (value 1), or random (value 0) The rest pixels will have the [default_value] value.
+
 The output folder will have the same name as the [dataset]: dataset/sparse_GT/train and [dataset]/sparse_GT/test
 
 
