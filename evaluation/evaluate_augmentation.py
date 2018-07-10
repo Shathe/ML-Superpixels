@@ -97,7 +97,7 @@ for i in range(N_CLASES):
 
 	print ''
 
-print "Recall (per pixel) ) {0} ".format(str((sum(acertado)/sum(real)))) 
+print "Recall (per pixel) {0} ".format(str((sum(acertado)/sum(real)))) 
 print ''
 
 print "Recall (mean per class) {0} ".format(media/N_CLASES) 
@@ -110,15 +110,6 @@ print "Accuracy (mean per class) {0} ".format(media2/N_CLASES)
 print ''
 
 
-
-'''
-DICE = 2 * np.array(interseccion_clase)/np.array(suma_clase)
-where_are_NaNs = np.isnan(DICE)
-DICE[where_are_NaNs] = 0
-print('Dice no por clase: '  + str(np.mean(DICE)))
-DICE = 2 * np.array(sum(interseccion_clase))/np.array(sum(suma_clase))
-print('Dice: '  + str(DICE))
-'''
 IoU =  np.array(interseccion_clase)/np.array(union_clase)
 where_are_NaNs = np.isnan(IoU)
 IoU[where_are_NaNs] = 0
