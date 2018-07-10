@@ -10,10 +10,15 @@ Link to the slides soon.
 If you find Multi-Level Superpixels useful in your research, please consider citing:
 
 @inproceedings{alonso2018MLSuperpixel,
+
   title={Semantic Segmentation from Sparse Labeling using Multi-Level Superpixels},
+  
   author={Alonso, I{\~n}igo and Murillo, Ana C},
+  
   booktitle={IEEE International Conference on Intelligent Robots and Systems},
+  
   year={2018}
+ 
 }
 
 ## Requirements
