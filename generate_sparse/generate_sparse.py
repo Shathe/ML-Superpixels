@@ -57,12 +57,11 @@ for folder in folders:
 		sparse[:,:] = int(args.default_value)
 
 		i_size, j_size = img.shape
-
 		if grid: # Perform grid-like sparse ground-truth
 			rate = i_size*1./j_size # rate between height and width
 			sqrt = math.sqrt(NUM_LABELS) 
-			n_i_points = int(rate*sqrt) # number of lables per coloumn
-			n_j_points = int(NUM_LABELS/n_i_points) # number of lables per row
+			n_i_points = int(rate*sqrt)+1 # number of lables per coloumn
+			n_j_points = int(NUM_LABELS/n_i_points)+1 # number of lables per row
 			space_betw_i = int(i_size / n_i_points) # space between every label
 			space_betw_j = int(j_size / n_j_points)
 			start_i = int((i_size - space_betw_i*(n_i_points-1))/2) # pixel to start labeling
