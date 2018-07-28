@@ -75,7 +75,7 @@ The output folder will have the same name as the [dataset]: [dataset]/augmented_
 
 For the evaluation of the quality of the augmented ground-truth, we compare it to the original dense labels. For this, you can run the following (specifying the dataset and the generated folder, as well as the number of classes to evaluate):
 ```
-python evaluation/evaluate_augmentation.py --labels ../Datasets/camvid/ --generated ./camvid/ --classes 11
+python evaluation/evaluate_augmentation.py --labels ./Datasets/camvid/ --generated ./camvid/ --classes 11
 ```
 
 
