@@ -16,10 +16,11 @@ args = parser.parse_args()
 
 DEFAULT_VALUE=int(args.default_value)
 csv_sizes =[1500,1200,960,760,610,490,390,310,250,200,160,120,90,60,40,20,7, 2] 
+csv_sizes =[7, 2] 
 directorio  = args.dataset
-sparse_dir = directorio + 'sparse_GT/'
-out_dir = directorio + 'augmented_GT/'
-superpixels_dir= args.dataset + 'superpixels/'
+sparse_dir = os.path.join( directorio ,'sparse_GT')
+out_dir = os.path.join(directorio , 'augmented_GT')
+superpixels_dir= os.path.join(args.dataset, 'superpixels')
 folders = ['test', 'train']
 
 class Superpixel:
@@ -89,28 +90,27 @@ def generar_augmentedGT():
 
 	for folder in folders:
 
-		in_folder = sparse_dir + folder
-		out_folder = out_dir + folder
-		superpixels_folder = superpixels_dir + folder
+		in_folder = os.path.join(sparse_dir , folder)
+		out_folder = os.path.join(out_dir , folder)
+		superpixels_folder = os.path.join(superpixels_dir , folder)
 
 		if not os.path.exists(out_folder):
-		    os.makedirs(out_folder)
+			os.makedirs(out_folder)
 
 		for filename in glob.glob(in_folder + '/*.' + args.image_format): #imagenes test a crear patches
 			gt_name = filename.split('/')[-1]
-			gt_filename = out_folder + '/' + gt_name
-
+			gt_filename = os.path.join( out_folder ,  gt_name)			
 			
 			#For each different segmentation generated
 			for index in xrange(len(csv_sizes)):
 				print(csv_sizes[index])
+				csv_name = os.path.join(superpixels_folder, 'superpixels_'+ str(csv_sizes[index]) ,  gt_name.replace('.' + args.image_format,'') + '.csv')
+
 				if index == 0:
 					#creates the first one (it has to be the more detailed one, the segmentation with more segments)
-					csv_name = superpixels_folder +'/superpixels_'+ str(csv_sizes[index]) + '/' + gt_name.replace('.' + args.image_format,'') + '.csv'
 					image_gt_new = image_superpixels_gt(csv_name, filename )
 				else:
 					#Mask it with the less detailed segmentations in order to fill the areas with no valid labels
-					csv_name = superpixels_folder  + '/superpixels_'+ str(csv_sizes[index]) + '/' + gt_name.replace('.' + args.image_format,'') + '.csv'
 					image_gt_new_low = image_superpixels_gt(csv_name, filename )
 					image_gt_new[image_gt_new==DEFAULT_VALUE]=image_gt_new_low[image_gt_new==DEFAULT_VALUE]
 

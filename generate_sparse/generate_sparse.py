@@ -30,8 +30,8 @@ parser.add_argument("--default_value", help="Value of non-labeled pixels", defau
 args = parser.parse_args()
 
 dataset_name = args.dataset.split('/')[-1]
-sparse_folder = dataset_name + '/sparse_GT'
-labels_folder = args.dataset + '/labels'
+sparse_folder = os.path.join(dataset_name , 'sparse_GT')
+labels_folder = os.path.join(args.dataset , 'labels') 
 NUM_LABELS = int(args.n_labels)
 grid = bool(int(args.gridlike))
 
@@ -42,13 +42,13 @@ if not os.path.exists(sparse_folder):
 
 # for every folder (test, train..)
 for folder in folders:
-
 	folder_to_write = sparse_folder + '/' + folder
 	if not os.path.exists(folder_to_write):
 	    os.makedirs(folder_to_write)
 
 	# For every file of the dataset
-	for filename in glob.glob(labels_folder + '/' + folder + '/*.' + args.image_format): 
+	
+	for filename in glob.glob(os.path.join(labels_folder ,folder )+ '/*.' + args.image_format): 
 		image_name = filename.split('/')[-1]
 		new_filename = folder_to_write + '/' + image_name
 

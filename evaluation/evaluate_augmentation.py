@@ -45,12 +45,13 @@ count = 0
 for folder in folders:
 
 	# For every image
-	for filename in glob.glob(args.labels + '/labels/' + folder + '/*.*'):
+	for filename in glob.glob(os.path.join(args.labels , 'labels/' , folder) + '/*.*'):
 		count = count 
 		# Load the generated and labaled image
 		name = ntpath.basename(filename)
 		points = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
-		generated = cv2.imread(args.generated + "/augmented_GT/" + folder  + "/" + name, cv2.IMREAD_GRAYSCALE)
+		
+		generated = cv2.imread(os.path.join(args.generated , 'augmented_GT/' , folder, name), cv2.IMREAD_GRAYSCALE)
 
 		generated=cv2.resize(generated,(points.shape[1], points.shape[0]), interpolation=cv2.INTER_NEAREST)
 		# Resize the generated to the labeled size (labeled pixels can be lost if it is done the other way round)
