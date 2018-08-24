@@ -5,6 +5,7 @@ import csv
 from collections import Counter
 import argparse
 import os
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", help="Dataset to train", default='./camvid/')
@@ -15,11 +16,13 @@ args = parser.parse_args()
 
 
 DEFAULT_VALUE=int(args.default_value)
-csv_sizes =[1500,1200,960,760,610,490,390,310,250,200,160,120,90,60,40,20,7, 2] 
+csv_sizes =[1500,1200,960,760,610,490,390,310,250,200,160,120,90,60,40,20,7, 2]
+factor_weight_each_level = 1.3
 directorio  = args.dataset
-sparse_dir = os.path.join( directorio ,'sparse_GT')
-out_dir = os.path.join(directorio , 'augmented_GT')
-superpixels_dir= os.path.join(args.dataset, 'superpixels')
+sparse_dir = directorio + 'sparse_GT/'
+out_dir = directorio + 'augmented_GT/'
+out_weights_dir = directorio + 'weights_augmented_GT/'
+superpixels_dir= args.dataset + 'superpixels/'
 folders = ['test', 'train']
 
 class Superpixel:
@@ -46,14 +49,14 @@ def label_mayoria_x_y(superpixel, gt):
 
 
 
-
-
-
 #Given a csv file with segmentations (csv_name) and a sparse GT image (gt_name), returns Superpixel-augmented GT image
-def image_superpixels_gt(csv_name, gt_name ):
+def image_superpixels_gt(csv_name, gt_name, weight_superpixel ):
 	print(gt_name)
 	gt = cv2.imread(gt_name,0)
 	blank_image = np.zeros((gt.shape[0], gt.shape[1],1), np.uint8)
+	weight_image = np.zeros((gt.shape[0], gt.shape[1],1), np.float32)
+	blank_image[:,:,:]= DEFAULT_VALUE
+	weight_image[:,:,:]= DEFAULT_VALUE
 
 	i=0
 	superpixels={}
@@ -81,7 +84,9 @@ def image_superpixels_gt(csv_name, gt_name ):
 		label_superpixel = label_mayoria_x_y(superpixels[str(index)], gt)
 		blank_image[superpixels[str(index)].lista_x.astype(int), superpixels[str(index)].lista_y.astype(int)] = int(label_superpixel)
 
-	return blank_image
+		weight_image[blank_image != DEFAULT_VALUE] = weight_superpixel
+
+	return blank_image, weight_image
 
 
 
@@ -89,34 +94,46 @@ def generar_augmentedGT():
 
 	for folder in folders:
 
-		in_folder = os.path.join(sparse_dir , folder)
-		out_folder = os.path.join(out_dir , folder)
-		superpixels_folder = os.path.join(superpixels_dir , folder)
+		in_folder = sparse_dir + folder
+		out_folder = out_dir + folder
+		out_weights_folder = out_weights_dir + folder
+		superpixels_folder = superpixels_dir + folder
 
 		if not os.path.exists(out_folder):
-			os.makedirs(out_folder)
+		    os.makedirs(out_folder)
+		if not os.path.exists(out_weights_folder):
+			os.makedirs(out_weights_folder)
 
 		for filename in glob.glob(in_folder + '/*.' + args.image_format): #imagenes test a crear patches
 			gt_name = filename.split('/')[-1]
-			gt_filename = os.path.join( out_folder ,  gt_name)			
-			
+			gt_filename = out_folder + '/' + gt_name
+			weight_filename = out_weights_folder + '/' + gt_name.replace('.png','')
+
 			#For each different segmentation generated
 			for index in xrange(len(csv_sizes)):
 				print(csv_sizes[index])
-				csv_name = os.path.join(superpixels_folder, 'superpixels_'+ str(csv_sizes[index]) ,  gt_name.replace('.' + args.image_format,'') + '.csv')
-
+				weight_superpixel = math.pow(factor_weight_each_level,len(csv_sizes) - index)
 				if index == 0:
 					#creates the first one (it has to be the more detailed one, the segmentation with more segments)
-					image_gt_new = image_superpixels_gt(csv_name, filename )
+					csv_name = superpixels_folder +'/superpixels_'+ str(csv_sizes[index]) + '/' + gt_name.replace('.' + args.image_format,'') + '.csv'
+					image_gt_new, image_weight_new= image_superpixels_gt(csv_name, filename, weight_superpixel )
+
 				else:
 					#Mask it with the less detailed segmentations in order to fill the areas with no valid labels
-					image_gt_new_low = image_superpixels_gt(csv_name, filename )
+					csv_name = superpixels_folder  + '/superpixels_'+ str(csv_sizes[index]) + '/' + gt_name.replace('.' + args.image_format,'') + '.csv'
+					image_gt_new_low, image_weight_new_low = image_superpixels_gt(csv_name, filename, weight_superpixel )
 					image_gt_new[image_gt_new==DEFAULT_VALUE]=image_gt_new_low[image_gt_new==DEFAULT_VALUE]
+					image_weight_new[image_weight_new == DEFAULT_VALUE] = image_weight_new_low[image_weight_new == DEFAULT_VALUE]
 
+
+
+			image_weight_new[image_weight_new == DEFAULT_VALUE] = 0
+			image_weight_new = image_weight_new / np.mean(image_weight_new)
 
 			# out_dir
 			cv2.imwrite(gt_filename,image_gt_new)
-			
+			np.save(weight_filename,image_weight_new)
+
 
 
 
