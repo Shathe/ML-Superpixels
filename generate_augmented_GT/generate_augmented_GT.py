@@ -5,23 +5,47 @@ import csv
 from collections import Counter
 import argparse
 import os
+import math
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataset", help="Dataset to train", default='./camvid/')
+parser.add_argument("--dataset", help="Dataset to train", default='./Datasets/camvid')
 parser.add_argument("--image_format", help="Labeled image format (jpg, jpeg, png...)", default='png')
 parser.add_argument("--default_value", help="Value of non-labeled pixels", default=255)
+parser.add_argument("--number_levels", help="Number of max iterations", default=15)
+parser.add_argument("--start_n_superpixels", help="Number of superpixels in the first iteration", default=3000)
+parser.add_argument("--last_n_superpixels", help="Number of superpixels in the last iteration", default=30)
 args = parser.parse_args()
 
 
 
 DEFAULT_VALUE=int(args.default_value)
-csv_sizes =[1500,1200,960,760,610,490,390,310,250,200,160,120,90,60,40,20,7, 2] 
-directorio  = args.dataset
+NL=int(args.number_levels)
+start_superpixels=int(args.start_n_superpixels)
+last_superpixels=int(args.last_n_superpixels)
+csv_sizes =[] 
+reduction_factor = math.pow(float(last_superpixels)/start_superpixels, 1./(NL-1))
+for level in xrange(NL):
+	csv_sizes =  csv_sizes + [int(round(start_superpixels * math.pow(reduction_factor, level)))]
+
+
+path_names = args.dataset.split('/')
+if path_names[-1] == '':
+	path_names  = path_names[:-1]
+directorio  = path_names[-1]
+
 sparse_dir = os.path.join( directorio ,'sparse_GT')
 out_dir = os.path.join(directorio , 'augmented_GT')
-superpixels_dir= os.path.join(args.dataset, 'superpixels')
+superpixels_dir= os.path.join(directorio, 'superpixels')
 folders = ['test', 'train']
 
+# Execute superpixel genration
+size_sup_string = " "
+for size in csv_sizes:
+	size_sup_string = size_sup_string + str(size) + " "
+
+os.system("sh generate_superpixels/generate_superpixels.sh " + args.dataset + size_sup_string)  
+
+'''
 class Superpixel:
 	def __init__(self):
 		self.lista_x = np.array([])
@@ -112,6 +136,7 @@ def generar_augmentedGT():
 					#Mask it with the less detailed segmentations in order to fill the areas with no valid labels
 					image_gt_new_low = image_superpixels_gt(csv_name, filename )
 					image_gt_new[image_gt_new==DEFAULT_VALUE]=image_gt_new_low[image_gt_new==DEFAULT_VALUE]
+				#cv2.imwrite(gt_filename.replace(gt_name, gt_name+'_'+str(csv_sizes[index])),image_gt_new)
 
 
 			# out_dir
@@ -128,9 +153,7 @@ print('GENERATION COMPLETED')
 
 
 
-
-
-
+'''
 
 
 

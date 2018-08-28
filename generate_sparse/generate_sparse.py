@@ -29,7 +29,12 @@ parser.add_argument("--image_format", help="Labeled image format (jpg, jpeg, png
 parser.add_argument("--default_value", help="Value of non-labeled pixels", default=255)
 args = parser.parse_args()
 
-dataset_name = args.dataset.split('/')[-1]
+
+path_names = args.dataset.split('/')
+if path_names[-1] == '':
+	path_names  = path_names[:-1]
+dataset_name  = path_names[-1]
+
 sparse_folder = dataset_name + '/sparse_GT'
 labels_folder = args.dataset + '/labels'
 NUM_LABELS = int(args.n_labels)
