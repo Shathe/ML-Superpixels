@@ -19,6 +19,9 @@ args = parser.parse_args()
 
 
 DEFAULT_VALUE=int(args.default_value)
+
+
+
 NL=int(args.number_levels)
 start_superpixels=int(args.start_n_superpixels)
 last_superpixels=int(args.last_n_superpixels)
@@ -26,7 +29,6 @@ csv_sizes =[]
 reduction_factor = math.pow(float(last_superpixels)/start_superpixels, 1./(NL-1))
 for level in xrange(NL):
 	csv_sizes =  csv_sizes + [int(round(start_superpixels * math.pow(reduction_factor, level)))]
-
 
 path_names = args.dataset.split('/')
 if path_names[-1] == '':
@@ -36,6 +38,7 @@ directorio  = path_names[-1]
 sparse_dir = os.path.join( directorio ,'sparse_GT')
 out_dir = os.path.join(directorio , 'augmented_GT')
 superpixels_dir= os.path.join(directorio, 'superpixels')
+
 folders = ['test', 'train']
 
 # Execute superpixel genration
@@ -43,9 +46,10 @@ size_sup_string = " "
 for size in csv_sizes:
 	size_sup_string = size_sup_string + str(size) + " "
 
+# Generate superpixels
 os.system("sh generate_superpixels/generate_superpixels.sh " + args.dataset + size_sup_string)  
 
-'''
+
 class Superpixel:
 	def __init__(self):
 		self.lista_x = np.array([])
@@ -148,12 +152,6 @@ def generar_augmentedGT():
 generar_augmentedGT()
 print('GENERATION COMPLETED')
 
-
-
-
-
-
-'''
 
 
 

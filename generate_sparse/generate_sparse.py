@@ -37,6 +37,7 @@ dataset_name  = path_names[-1]
 
 sparse_folder = dataset_name + '/sparse_GT'
 labels_folder = args.dataset + '/labels'
+
 NUM_LABELS = int(args.n_labels)
 grid = bool(int(args.gridlike))
 
@@ -47,13 +48,13 @@ if not os.path.exists(sparse_folder):
 
 # for every folder (test, train..)
 for folder in folders:
-
 	folder_to_write = sparse_folder + '/' + folder
 	if not os.path.exists(folder_to_write):
 	    os.makedirs(folder_to_write)
 
 	# For every file of the dataset
-	for filename in glob.glob(labels_folder + '/' + folder + '/*.' + args.image_format): 
+	
+	for filename in glob.glob(os.path.join(labels_folder ,folder )+ '/*.' + args.image_format): 
 		image_name = filename.split('/')[-1]
 		new_filename = folder_to_write + '/' + image_name
 
