@@ -57,7 +57,7 @@ The output folder will have the same name as the [dataset]: [dataset]/sparse_GT/
 
 To generate the augmented ground-truth, you have to specify the path where the sparse labels and superpixels have been created.
 ```
-python generate_augmented_GT/generate_augmented_GT.py --dataset ./Datasets/camvid
+python generate_augmented_GT/generate_augmented_GT.py --dataset ./Datasets/camvid --number_levels 15 --start_n_superpixels 3000 --last_n_superpixels 30
 ```
 The output folder will have the same name as the [dataset]: [dataset]/augmented_GT/train and [dataset]/augmented_GT/test
 
