@@ -2,7 +2,8 @@
 
 Implementation of our multi-level superpixel augmentation from sparse labeling presented on the [IROS 2018](https://www.iros2018.org/).
 
-Link to the paper soon.
+[Link to the paper](https://drive.google.com/file/d/1C49a4KinpGMd97CPmtt-TFKn0UMuBfYj/view?usp=sharing)
+
 Link to the slides soon.
 
 ## Citing Multi-Level Superpixels 
