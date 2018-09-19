@@ -140,7 +140,7 @@ def generar_augmentedGT():
 					#Mask it with the less detailed segmentations in order to fill the areas with no valid labels
 					image_gt_new_low = image_superpixels_gt(csv_name, filename )
 					image_gt_new[image_gt_new==DEFAULT_VALUE]=image_gt_new_low[image_gt_new==DEFAULT_VALUE]
-				#cv2.imwrite(gt_filename.replace(gt_name, gt_name+'_'+str(csv_sizes[index])),image_gt_new)
+				#cv2.imwrite(gt_filename.replace(gt_name, gt_name.replace('.png', '_'+str(csv_sizes[index])+'.png')),image_gt_new)
 
 
 			# out_dir
