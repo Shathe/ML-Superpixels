@@ -74,7 +74,7 @@ python evaluation/evaluate_augmentation.py --labels ./Datasets/camvid/ --generat
 
 
 ## Training a semantic segmentation model
-[This other repository](https://github.com/Shathe/FC-Mnasnet) shows a simple example for training a semantic segmentation model using tensorflow with eager mode.
+[This other repository](https://github.com/Shathe/Semantic-Segmentation-Tensorflow-Eager) shows a simple example for training a semantic segmentation model using tensorflow with eager mode.
 
 
 
