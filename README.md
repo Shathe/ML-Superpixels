@@ -4,7 +4,7 @@ Implementation of our multi-level superpixel augmentation from sparse labeling p
 
 [Link to the paper](https://drive.google.com/file/d/1C49a4KinpGMd97CPmtt-TFKn0UMuBfYj/view?usp=sharing)
 
-Link to the slides soon.
+[Link to the slides](https://docs.google.com/presentation/d/e/2PACX-1vTQzk0kM-DbzwvTkTfUoNPXJwyAzrzrTIFF7u7DM53PiMuiL2H8noExB01A4G9Hl5uduw8D2R9OMKcG/pub?start=false&loop=false&delayms=3000)
 
 ## Citing Multi-Level Superpixels 
 
