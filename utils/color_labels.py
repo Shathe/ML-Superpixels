@@ -9,7 +9,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", help="Dataset to train", default='../camvid/')
-parser.add_argument("--n_labels", help="Dataset to train", default=11)
+parser.add_argument("--n_labels", help="Dataset to train", default=20)
 args = parser.parse_args()
 
 
