@@ -87,6 +87,7 @@ print ''
 
 media = 0.00
 media2 = 0.00
+real_classes = N_CLASES
 for i in range(N_CLASES):
         for j in range(N_CLASES):
 		if i == j:
@@ -94,26 +95,31 @@ for i in range(N_CLASES):
 				media = media + float(matrix[i,j]/real[i])
 				if 	predicho[i] != 0:
 					media2 = media2 + float(matrix[i,j]/predicho[i])
-		print "%0.2f	" % float(matrix[i,j]/real[i]),
 
-	print ''
+			else:
+				real_classes-=1
+		#print "%0.2f	" % float(matrix[i,j]/real[i]),
+
+
+
 
 print "Recall (per pixel) {0} ".format(str((sum(acertado)/sum(real)))) 
 print ''
 
-print "Recall (mean per class) {0} ".format(media/N_CLASES) 
+print "Recall (mean per class) {0} ".format(media/real_classes)
 print ''
 
 print "Accuracy (per pixel) {0} ".format(str((sum(acertado)/sum(predicho)))) 
 print ''
 
-print "Accuracy (mean per class) {0} ".format(media2/N_CLASES) 
+print "Accuracy (mean per class) {0} ".format(media2/real_classes)
 print ''
-
 
 IoU =  np.array(interseccion_clase)/np.array(union_clase)
 where_are_NaNs = np.isnan(IoU)
 IoU[where_are_NaNs] = 0
+IoU=IoU[IoU != 0]
+
 print('IoU (mean per class): '  + str(np.mean(IoU)))
 IoU =  np.array(sum(interseccion_clase))/np.array(sum(union_clase))
 print('IoU (per pixel): '  + str(IoU))
