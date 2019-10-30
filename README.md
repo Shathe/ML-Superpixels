@@ -12,6 +12,8 @@ If you find Multi-Level Superpixels useful in your research, please consider cit
 @inproceedings{alonso2019CoralSeg,
   title={CoralSeg: Learning Coral Segmentation from Sparse Annotations},
   author={Alonso, I{\~n}igo and Yuval, Matan and Eyal, Gal and Treibitz, Tali and Murillo, Ana C},
+  booktitle={Journal of Field Robotics},
+  year={2019}
 }
 
 @inproceedings{alonso2018MLSuperpixel,
