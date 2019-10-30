@@ -2,7 +2,7 @@
 
 Implementation of our multi-level superpixel augmentation from sparse labeling presented on the [IROS 2018](https://www.iros2018.org/).
 
-Regarding our next (not published yet) work, *CoralSeg: Learning Coral Segmentation from Sparse Annotations*, we improve the algorithm regarding robustness and efficiency on memory (now it supports high resolution images) and speed (now it goes between x2 and x3 faster).
+Regarding our next work, *CoralSeg: Learning Coral Segmentation from Sparse Annotations*, we improve the algorithm regarding robustness and efficiency on memory (now it supports high resolution images) and speed (now it goes between x2 and x3 faster).
  
 
 ## Citing Multi-Level Superpixels 
