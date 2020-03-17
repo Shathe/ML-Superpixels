@@ -8,12 +8,12 @@ import os
 import math
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--dataset", help="Dataset to train", default='./Datasets/camvid_small')
+parser.add_argument("--dataset", help="Dataset to train", default='./Datasets/example2')
 parser.add_argument("--image_format", help="Labeled image format (jpg, jpeg, png...)", default='png')
 parser.add_argument("--default_value", help="Value of non-labeled pixels", default=255)
-parser.add_argument("--number_levels", help="Number of max iterations", default=5)
-parser.add_argument("--start_n_superpixels", help="Number of superpixels in the first iteration", default=3000)
-parser.add_argument("--last_n_superpixels", help="Number of superpixels in the last iteration", default=30)
+parser.add_argument("--number_levels", help="Number of max iterations", default=25)
+parser.add_argument("--start_n_superpixels", help="Number of superpixels in the first iteration", default=1000)
+parser.add_argument("--last_n_superpixels", help="Number of superpixels in the last iteration", default=5)
 args = parser.parse_args()
 
 DEFAULT_VALUE = int(args.default_value)
@@ -23,7 +23,7 @@ start_superpixels = int(args.start_n_superpixels)
 last_superpixels = int(args.last_n_superpixels)
 csv_sizes = []
 reduction_factor = math.pow(float(last_superpixels) / start_superpixels, 1. / (NL - 1))
-for level in xrange(NL):
+for level in range(NL):
     csv_sizes = csv_sizes + [int(round(start_superpixels * math.pow(reduction_factor, level)))]
 
 path_names = args.dataset.split('/')
@@ -45,8 +45,9 @@ for size in csv_sizes:
 # Generate superpixels
 os.system("sh generate_superpixels/generate_superpixels.sh " + args.dataset + size_sup_string)
 
+
 class Superpixel:
-    def __init__(self, maxlength=1000): #10000000
+    def __init__(self, maxlength=10000): #10000000
         self.lista_x = np.zeros([maxlength], dtype=np.int16)
         self.lista_y = np.zeros([maxlength], dtype=np.int16)
         self.lista_x[:]=-1
@@ -70,6 +71,7 @@ class Superpixel:
         self.lista_x[self.index]=value_x
         self.lista_y[self.index]=value_y
         self.index += 1
+        # print(len(lista_y_new))
 
     def clean(self):
         self.lista_x = self.lista_x[self.lista_x>=0]
@@ -92,31 +94,35 @@ def label_mayoria_x_y(superpixel, gt):
 
 
 # Given a csv file with segmentations (csv_name) and a sparse GT image (gt_name), returns Superpixel-augmented GT image
-def image_superpixels_gt(csv_name, gt_name):
+def image_superpixels_gt(csv_name, gt_name, n_superpixels):
     print(gt_name)
     gt = cv2.imread(gt_name, 0)
     blank_image = np.zeros((gt.shape[0], gt.shape[1], 1), np.uint8)
 
-    i = 0
     superpixels = {}
+
+    for i in range(n_superpixels*2):
+        superpixels[str(i)] = Superpixel()
+
 
     # For each csv segmentation file, creates the Superpixel class
     with open(csv_name, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        i = 0
+
         for row in spamreader:
             fila = row[0].split(',')
             fila_count = len(fila)
-            for j in xrange(fila_count):
+            for j in range(fila_count):
                 superpixel_index = fila[j]
                 # The pixel here is (i, j). (superpixel_index) is the segmentation which the pixel belongs to
-                if superpixel_index not in superpixels.keys():
-                    superpixels[superpixel_index] = Superpixel()
                 # Add the pixel  to the Superpixel instance
                 superpixels[superpixel_index].add(i, j)
+
             i = i + 1
 
     # For each superpixel, gets its label value and writes it into the image to return
-    for index in xrange(len(superpixels)):
+    for index in range(len(superpixels)):
         superpixels[str(index)].clean()
         label_superpixel = label_mayoria_x_y(superpixels[str(index)], gt)
         blank_image[superpixels[str(index)].lista_x.astype(int), superpixels[str(index)].lista_y.astype(int)] = int(
@@ -134,24 +140,26 @@ def generar_augmentedGT():
 
         if not os.path.exists(out_folder):
             os.makedirs(out_folder)
-
+        print(in_folder + '/*.' + args.image_format)
         for filename in glob.glob(in_folder + '/*.' + args.image_format):  # imagenes test a crear patches
             gt_name = filename.split('/')[-1]
             gt_filename = os.path.join(out_folder, gt_name)
 
             # For each different segmentation generated
-            for index in xrange(len(csv_sizes)):
+            for index in range(len(csv_sizes)):
                 print(csv_sizes[index])
+
                 csv_name = os.path.join(superpixels_folder, 'superpixels_' + str(csv_sizes[index]),
                                         gt_name.replace('.' + args.image_format, '') + '.csv')
 
                 if index == 0:
                     # creates the first one (it has to be the more detailed one, the segmentation with more segments)
-                    image_gt_new = image_superpixels_gt(csv_name, filename)
+                    image_gt_new = image_superpixels_gt(csv_name, filename, csv_sizes[index])
                 else:
                     # Mask it with the less detailed segmentations in order to fill the areas with no valid labels
-                    image_gt_new_low = image_superpixels_gt(csv_name, filename)
+                    image_gt_new_low = image_superpixels_gt(csv_name, filename, csv_sizes[index])
                     image_gt_new[image_gt_new == DEFAULT_VALUE] = image_gt_new_low[image_gt_new == DEFAULT_VALUE]
+                    print(image_gt_new.shape)
                 # cv2.imwrite(gt_filename.replace(gt_name, gt_name.replace('.png', '_'+str(csv_sizes[index])+'.png')),image_gt_new)
 
             # out_dir
