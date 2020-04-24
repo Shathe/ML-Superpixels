@@ -32,6 +32,8 @@ If you find Multi-Level Superpixels useful in your research, please consider cit
 
 ## Running it all
 
+First of all please, go to [this repository](https://github.com/davidstutz/superpixels-revisited), clone it, [install and compile it](https://github.com/davidstutz/superpixels-revisited#building) and replace the generated binaries in [this folder](https://github.com/Shathe/ML-Superpixels/tree/master/bin) (delete the folders inside ./bin of this repo and copy the folders generated in the superpixels-revisited repo).
+
 ### Generate a sparse ground-truth from a dense-labeled ground-truth
 
 If your segmentation ground truth labels are dense, you can still simulate a sparse one, generating the sparse labeled images (images with only a few labeled pixels) with the following step.
