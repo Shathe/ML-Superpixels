@@ -36,7 +36,7 @@ First of all please, go to [this repository](https://github.com/davidstutz/super
 
 The current compiled files may not work for your computer.
 
-For windows users, [JamesPatrick1014](https://github.com/JamesPatrick1014) compiled and provided the .exe files. 
+For windows users, thanks to [JamesPatrick1014](https://github.com/JamesPatrick1014) compiled and provided the .exe files. 
 For using the, just change the first line of the .sh file so these are called instead.
 
 ### Generate a sparse ground-truth from a dense-labeled ground-truth
